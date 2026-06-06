@@ -82,7 +82,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     });
     sessionStorage.setItem('lastOrder', JSON.stringify({ orderId, total: cartTotal() }));
     sessionStorage.removeItem('cart');
-    location.href = 'complete.html';
+    // purchase 이벤트가 GTM/GA4로 전송될 시간을 준 뒤 페이지 이동 (0.6초)
+    setTimeout(function() { location.href = 'complete.html'; }, 600);
   });
 </script>
 </body>
