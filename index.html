@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>데일리룩 — 오늘의 무드</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <a href="index.html" class="logo">daily<span>look</span></a>
+  <nav>
+    <a href="index.html">신상품</a>
+    <a href="index.html">베스트</a>
+    <a href="index.html">아우터</a>
+    <a href="index.html">세일</a>
+  </nav>
+  <a href="cart.html" class="cart-link">장바구니<span class="count">0</span></a>
+</header>
+
+<div class="wrap">
+  <p class="eyebrow">2026 Spring Collection</p>
+  <h1>입을수록<br>편안한 하루.</h1>
+  <p class="lead">매일 손이 가는 옷. 데일리룩은 2030 여성을 위한 캐주얼 의류를 제안합니다.</p>
+
+  <h2>오늘의 추천</h2>
+  <div class="grid" id="productGrid"></div>
+</div>
+
+<footer>© 2026 dailylook · 가상 포트폴리오용 데모 사이트</footer>
+
+<script src="app.js"></script>
+<script>
+  // 메인 화면 진입 추적 (page_view는 GA4 자동, 여기선 의미 있는 진입을 명시)
+  track('view_item_list', { list_name: '오늘의 추천' });
+
+  // 상품 카드 렌더링
+  const grid = document.getElementById('productGrid');
+  Object.values(PRODUCTS).forEach(p => {
+    const a = document.createElement('a');
+    a.href = 'product.html?id=' + p.id;
+    a.className = 'card';
+    a.setAttribute('data-product-id', p.id);
+    a.innerHTML = `
+      <div class="thumb" style="background:${p.color}">${p.name.split(' ')[0]}</div>
+      <div class="body">
+        <div class="cat">${p.cat}</div>
+        <div class="name">${p.name}</div>
+        <div class="price">${won(p.price)}</div>
+      </div>`;
+    // 상품 클릭 추적
+    a.addEventListener('click', () => {
+      track('select_item', { item_id: p.id, item_name: p.name, item_category: p.cat });
+    });
+    grid.appendChild(a);
+  });
+</script>
+</body>
+</html>

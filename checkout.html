@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>결제 — 데일리룩</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <a href="index.html" class="logo">daily<span>look</span></a>
+  <nav>
+    <a href="index.html">신상품</a>
+    <a href="index.html">베스트</a>
+    <a href="index.html">아우터</a>
+    <a href="index.html">세일</a>
+  </nav>
+  <a href="cart.html" class="cart-link">장바구니<span class="count">0</span></a>
+</header>
+
+<div class="wrap">
+  <p class="eyebrow">Checkout</p>
+  <h1 style="font-size:42px">결제하기</h1>
+
+  <div class="checkout-grid" style="margin-top:32px">
+    <div>
+      <h2>배송 정보</h2>
+      <div class="field"><label>받는 분</label><input id="name" type="text" placeholder="홍길동"></div>
+      <div class="field"><label>연락처</label><input id="phone" type="text" placeholder="010-0000-0000"></div>
+      <div class="field"><label>주소</label><input id="addr" type="text" placeholder="배송받을 주소"></div>
+      <h2 style="margin-top:36px">결제 수단</h2>
+      <div class="field"><label>카드 번호</label><input id="card" type="text" placeholder="0000 - 0000 - 0000 - 0000"></div>
+    </div>
+
+    <div>
+      <div class="summary" style="margin-top:0">
+        <h2 style="font-size:20px">주문 요약</h2>
+        <div id="orderLines"></div>
+        <div class="row total"><span>총 결제금액</span><span class="accent" id="grandTotal">₩0</span></div>
+        <button class="btn block dark" id="payBtn" style="margin-top:20px">결제 완료하기</button>
+        <p style="font-size:12px;color:var(--muted);text-align:center;margin-top:12px">* 가상 데모입니다. 실제 결제되지 않아요.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>© 2026 dailylook · 가상 포트폴리오용 데모 사이트</footer>
+
+<script src="app.js"></script>
+<script>
+  const cart = getCart();
+  if (cart.length === 0) { location.href = 'cart.html'; }
+
+  const linesEl = document.getElementById('orderLines');
+  cart.forEach(item => {
+    const row = document.createElement('div');
+    row.className = 'row';
+    row.innerHTML = `<span>${item.name} × ${item.qty}</span><span>${won(item.price * item.qty)}</span>`;
+    linesEl.appendChild(row);
+  });
+  document.getElementById('grandTotal').textContent = won(cartTotal());
+
+  // ⭐ 핵심: 구매 완료 (퍼널 5단계 = purchase)
+  document.getElementById('payBtn').addEventListener('click', () => {
+    const orderId = 'DL' + Date.now().toString().slice(-8);
+    track('purchase', {
+      transaction_id: orderId,
+      value: cartTotal(),
+      item_count: cartCount(),
+      items: cart.map(i => ({ item_id: i.id, item_name: i.name, quantity: i.qty, price: i.price }))
+    });
+    sessionStorage.setItem('lastOrder', JSON.stringify({ orderId, total: cartTotal() }));
+    sessionStorage.removeItem('cart');
+    location.href = 'complete.html';
+  });
+</script>
+</body>
+</html>

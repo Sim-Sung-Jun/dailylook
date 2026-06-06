@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>장바구니 — 데일리룩</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <a href="index.html" class="logo">daily<span>look</span></a>
+  <nav>
+    <a href="index.html">신상품</a>
+    <a href="index.html">베스트</a>
+    <a href="index.html">아우터</a>
+    <a href="index.html">세일</a>
+  </nav>
+  <a href="cart.html" class="cart-link">장바구니<span class="count">0</span></a>
+</header>
+
+<div class="wrap">
+  <p class="eyebrow">Your Bag</p>
+  <h1 style="font-size:42px">장바구니</h1>
+
+  <div id="cartItems" style="margin-top:32px"></div>
+
+  <div id="cartSummary"></div>
+
+  <div id="emptyMsg" style="display:none; padding:60px 0; text-align:center; color:var(--muted)">
+    <p style="font-size:18px; margin-bottom:20px">장바구니가 비어 있어요.</p>
+    <a href="index.html" class="btn">쇼핑하러 가기</a>
+  </div>
+</div>
+
+<footer>© 2026 dailylook · 가상 포트폴리오용 데모 사이트</footer>
+
+<script src="app.js"></script>
+<script>
+  const cart = getCart();
+  const itemsEl = document.getElementById('cartItems');
+  const summaryEl = document.getElementById('cartSummary');
+  const emptyEl = document.getElementById('emptyMsg');
+
+  if (cart.length === 0) {
+    emptyEl.style.display = 'block';
+  } else {
+    // 장바구니 화면 진입 추적
+    track('view_cart', { value: cartTotal(), item_count: cartCount() });
+
+    cart.forEach(item => {
+      const p = PRODUCTS[item.id];
+      const row = document.createElement('div');
+      row.className = 'line-item';
+      row.innerHTML = `
+        <div class="mini" style="background:${p.color}">${item.name.split(' ')[0]}</div>
+        <div class="info">
+          <div class="ct">${item.cat}</div>
+          <div class="nm">${item.name}</div>
+          <div style="font-size:13px;color:var(--muted)">수량 ${item.qty}개</div>
+        </div>
+        <div class="amt">${won(item.price * item.qty)}</div>`;
+      itemsEl.appendChild(row);
+    });
+
+    summaryEl.innerHTML = `
+      <div class="summary">
+        <div class="row"><span>상품 금액</span><span>${won(cartTotal())}</span></div>
+        <div class="row"><span>배송비</span><span>무료</span></div>
+        <div class="row total"><span>총 결제금액</span><span class="accent">${won(cartTotal())}</span></div>
+        <button class="btn block" id="checkoutBtn" style="margin-top:20px">결제하기</button>
+      </div>`;
+
+    // ⭐ 핵심: 결제 시작 (퍼널 4단계 = begin_checkout)
+    document.getElementById('checkoutBtn').addEventListener('click', () => {
+      track('begin_checkout', { value: cartTotal(), item_count: cartCount() });
+      location.href = 'checkout.html';
+    });
+  }
+</script>
+</body>
+</html>

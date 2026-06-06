@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>주문 완료 — 데일리룩</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <a href="index.html" class="logo">daily<span>look</span></a>
+  <nav>
+    <a href="index.html">신상품</a>
+    <a href="index.html">베스트</a>
+    <a href="index.html">아우터</a>
+    <a href="index.html">세일</a>
+  </nav>
+  <a href="cart.html" class="cart-link">장바구니<span class="count">0</span></a>
+</header>
+
+<div class="wrap">
+  <div class="done">
+    <div class="check">✓</div>
+    <p class="eyebrow" style="text-align:center">Order Complete</p>
+    <h1 style="font-size:40px">주문이 완료됐어요!</h1>
+    <p class="lead" style="margin:16px auto 0">곧 예쁘게 포장해서 보내드릴게요.</p>
+    <div class="order-no" id="orderNo">주문번호 —</div>
+    <div style="margin-top:24px">
+      <a href="index.html" class="btn">쇼핑 계속하기</a>
+    </div>
+  </div>
+</div>
+
+<footer>© 2026 dailylook · 가상 포트폴리오용 데모 사이트</footer>
+
+<script src="app.js"></script>
+<script>
+  const order = JSON.parse(sessionStorage.getItem('lastOrder') || '{}');
+  if (order.orderId) {
+    document.getElementById('orderNo').textContent = '주문번호 ' + order.orderId;
+  }
+  updateCartCount();
+</script>
+</body>
+</html>

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>상품 상세 — 데일리룩</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <a href="index.html" class="logo">daily<span>look</span></a>
+  <nav>
+    <a href="index.html">신상품</a>
+    <a href="index.html">베스트</a>
+    <a href="index.html">아우터</a>
+    <a href="index.html">세일</a>
+  </nav>
+  <a href="cart.html" class="cart-link">장바구니<span class="count">0</span></a>
+</header>
+
+<div class="wrap">
+  <p class="eyebrow"><a href="index.html">← 목록으로</a></p>
+  <div class="detail">
+    <div class="photo" id="photo">daily look</div>
+    <div>
+      <div class="cat" id="cat" style="color:var(--muted);font-size:13px;letter-spacing:1px;text-transform:uppercase"></div>
+      <h1 id="name" style="font-size:38px"></h1>
+      <div class="price-tag" id="price"></div>
+      <p class="desc">매일 입기 좋은 베이직한 핏. 부드러운 소재감으로 데일리 코디에 자연스럽게 어울립니다.</p>
+      <div class="spec"><span>소재</span><span>코튼 100%</span></div>
+      <div class="spec"><span>핏</span><span>오버핏 / 릴렉스</span></div>
+      <div class="spec"><span>배송</span><span>3일 이내 출고</span></div>
+      <button class="btn block dark" id="addToCartBtn" style="margin-top:28px">장바구니 담기</button>
+    </div>
+  </div>
+</div>
+
+<footer>© 2026 dailylook · 가상 포트폴리오용 데모 사이트</footer>
+
+<script src="app.js"></script>
+<script>
+  const params = new URLSearchParams(location.search);
+  const id = params.get('id') || 'p01';
+  const p = PRODUCTS[id] || PRODUCTS.p01;
+
+  document.getElementById('photo').style.background = p.color;
+  document.getElementById('photo').textContent = p.name.split(' ')[0];
+  document.getElementById('cat').textContent = p.cat;
+  document.getElementById('name').textContent = p.name;
+  document.getElementById('price').textContent = won(p.price);
+  document.title = p.name + ' — 데일리룩';
+
+  // 상품 상세 조회 추적 (퍼널 2단계)
+  track('view_item', { item_id: p.id, item_name: p.name, item_category: p.cat, value: p.price });
+
+  // ⭐ 핵심: 장바구니 담기 (퍼널 3단계 = add_to_cart)
+  const btn = document.getElementById('addToCartBtn');
+  btn.setAttribute('data-product-id', p.id);
+  btn.addEventListener('click', () => {
+    addToCart(p.id);
+    track('add_to_cart', { item_id: p.id, item_name: p.name, item_category: p.cat, value: p.price, quantity: 1 });
+    toast('장바구니에 담았어요!');
+  });
+</script>
+</body>
+</html>
